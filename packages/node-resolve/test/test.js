@@ -44,6 +44,17 @@ test('handles a trailing slash', async (t) => {
   t.is(module.exports, 'It works!');
 });
 
+test('handles missing js extension', async (t) => {
+  const bundle = await rollup({
+    input: 'missing-extension.js',
+    onwarn: () => t.fail('No warnings were expected'),
+    plugins: [nodeResolve({ mainFields: ['main'] }), commonjs()]
+  });
+  const { module } = await testBundle(t, bundle);
+
+  t.is(module.exports, 'FOO');
+});
+
 test('finds a file inside a package directory', async (t) => {
   const bundle = await rollup({
     input: 'granular.js',
